@@ -1,1 +1,16 @@
 simple-mvc-php
+* 概要
+* URL
+Domain/機能名/画面名?param1=valeu2&....
+* ディレクトリ構成
+* MVC
+** Model
+- src/model/機能名Model.class.php
+** View
+- src/view/機能名/画面名View.class.php
+- 入力データのバリデーションなど。
+- 表示用のデータを生成
+** template
+- src/template/機能名/画面名.tmpl.php
+** Controleer
+- ユーザは特に作る必要なし
