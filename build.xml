@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="goo Wikipedia Search" basedir="." default="all">
+<project name="simple-mvc-php" basedir="." default="all">
   
   <target name="all" depends="test"/>
 
