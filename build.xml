@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="goo Wikipedia Search" basedir="." default="all">
+  
+  <target name="all" depends="test"/>
+
+  <target name="lint">
+    <phplint>
+      <fileset dir="include">
+        <include name="**/*.php"/>
+      </fileset>
+    </phplint>
+  </target>
+
+  <target name="test" depends="lint">
+    <phpunit haltonfailure="true" printsummary="true">
+      <batchtest>
+        <fileset dir="include">
+          <include name="**/*Test.class.php"/>
+        </fileset>
+      </batchtest>
+      <formatter type="plain" todir="report" outfile="logfile.xml" usefile="false" />
+    </phpunit>
+  </target>
+  
+</project>
