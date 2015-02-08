@@ -1,31 +1,54 @@
 <?php
 require_once 'model/UserModel.class.php';
 
-// ユーザー
-abstract class AbstractUserAction extends Action {
+// ログイン
+class LoginAction extends Action {
     protected $model;
 
     public function __construct() {
         $this->model = new UserModel();
     }
 
+    // この画面で使用するパラメータ
+    protected function parameter() {
+        return array(
+            'user_id'  => array('type'=>'word', 'required'=>true),
+            'password' => array('type'=>'password', 'required'=>true),
+        );
+    }
+
     protected function setRecord(&$data) {
-        $data['name'] = $this->params->get('name');
-        $data['user_id'] = $this->params->get('user_id');
-        $data['password'] = $this->params->get('password');
-        $data['admin'] = $this->params->get('admin');
+    }
+
+    public function execute() {
+        $params = $this->params;
+        $view = $this->createView();
+
+        $userId = $this->params->get('user_id');
+        $password = $this->params->get('password');
+
+        $data = $this->model->record($userId);
+        $errors = array();
+
+        if ($this->params->isPost()) {
+            if ($this->checkParams($errors)) {
+                header("Location: /user/list");
+                return;
+            } else {
+                $this->setRecord($data);
+            }
+        }
+
+        $view->errors = $errors;
+        $view->userId = $userId;
+        $view->password = $password;
+        $view->render();
     }
 
     // 返り値=> true:OK false:NG
-    protected function checkParams(&$errors) {
+    private function checkParams(&$errors) {
         $params = $this->params;
         $valid = true;
-
-        $error = $params->error('name');
-        if ($error > 0) {
-            $errors['name'] = $this->getErrorMessage($error);
-            $valid = false;
-        }
 
         $error = $params->error('user_id');
         if ($error > 0) {

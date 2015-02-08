@@ -1,8 +1,15 @@
 <div class="form-group <?php bst_has_error($errors, 'name');?> has-feedback">
     <label for="name" class="col-sm-2 control-label">名前</label>
     <div class="col-sm-10">
-        <input name="name" type="text" class="form-control" placeholder="名前" value="<?php eh2($name, '');?>">
+        <input name="name" type="text" class="form-control" placeholder="表示用" value="<?php eh2($name, '');?>">
         <?php bst_error_msg($errors, 'name') ?>
+    </div>
+</div>
+<div class="form-group <?php bst_has_error($errors, 'userId');?> has-feedback">
+    <label for="user_id" class="col-sm-2 control-label">User ID</label>
+    <div class="col-sm-10">
+        <input name="user_id" type="text" class="form-control" placeholder="英数, _ のみ" value="<?php eh2($userId, '');?>">
+        <?php bst_error_msg($errors, 'userId') ?>
     </div>
 </div>
 <div class="form-group <?php bst_has_error($errors, 'password');?> has-feedback">

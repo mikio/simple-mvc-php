@@ -17,6 +17,7 @@ class UserModel extends DbModel {
     public function emptyRecord() {
         $data = array();
         $data['name'] = '';
+        $data['user_id'] = '';
         $data['password'] = '';
         $data['admin'] = 0;
     }

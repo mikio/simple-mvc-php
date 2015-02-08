@@ -23,6 +23,9 @@ abstract class Action {
     public function createView() {
         return new View($this->controllerName, $this->actionName);
     }
+    public function redirect($url) {
+        throw new RedirectException($url);
+    }
     abstract function execute();
 }
 ?>

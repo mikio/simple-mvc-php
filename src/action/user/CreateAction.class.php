@@ -12,6 +12,7 @@ class CreateAction extends AbstractUserAction {
     protected function parameter() {
         return array(
             'name'  => array('type'=>'word', 'required'=>true),
+            'user_id' => array('type'=>'user_id', 'required'=>true),
             'password' => array('type'=>'password', 'required'=>true),
             'admin' => array('type'=>'checkbox', 'default'=>0),
         );
@@ -19,8 +20,6 @@ class CreateAction extends AbstractUserAction {
 
     public function execute() {
         $params = $this->params;
-        get_log()->debug('admin:'.$params->get('admin'));
-        get_log()->debug('admin error:'.$params->error('admin'));
         $view = $this->createView();
 
         $data = $this->model->emptyRecord();
@@ -29,15 +28,16 @@ class CreateAction extends AbstractUserAction {
         if ($this->params->isPost()) {
             if ($this->checkParams($errors)) {
                 $this->createUser($data);
-                header("Location: /user/list");
-                return;
+                $this->redirect('/user/list');
             } else {
+        get_log()->debug(p($errors));
                 $this->setRecord($data);
             }
         }
 
         $view->errors = $errors;
         $view->name = $data['name'];
+        $view->userId = $data['user_id'];
         $view->password = $data['password'];
         $view->admin = $data['admin'];
         $view->render();

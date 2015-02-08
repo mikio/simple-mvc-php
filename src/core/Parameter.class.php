@@ -26,7 +26,6 @@ class Parameter {
             $rawParams = $_GET;
         }
         if ($rawParams) {
-            var_dump($rawParams);
             $this->validate($rawParams, $validates);
         }
 

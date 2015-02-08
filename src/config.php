@@ -19,6 +19,7 @@ $g_type = array(
     'id'        => array('length'=>20, 'regex'=>'/\d.*/'),
     'timestamp' => array('length'=>100,'regex'=>null),
     'word'      => array('length'=>100,'regex'=>null),
+    'user_id'   => array('length'=>100,'regex'=>'/^[0-9a-zA-Z_]+$/'),
     'password'  => array('length'=>8,  'regex'=>'/^[0-9a-zA-Z]+$/'),
     'email'     => array('length'=>50, 'regex'=>'/.*@.*/'),
     'phone'     => array('length'=>12, 'regex'=>'/\d{2}-\d{4}-\d{4}/'),

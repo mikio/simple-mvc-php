@@ -7,10 +7,11 @@ class Controller {
     private $actionName;
     private $action;
     private $response;
+    private $session;
 
     public function __construct() {
-        get_log()->debug("hoge");
         $this->response = new Response();
+        $this->session = new Session();
     }
 
     // 振分け処理実行
@@ -25,7 +26,19 @@ class Controller {
 
             $content = $this->notFoundPage();
 
+        } catch (RedirectException $e) {
+
+            $url = $e->getMessage();
+            $content = $this->redirect($url);
+
+        } catch (LoginException $e) {
+
+            $this->controllerName = 'user';
+            $this->actionName = 'login';
+            $content = $this->executeAction();
+
         } catch (Exception $e) {
+
             get_log()->err("action->execute():".$e);
         }
         $this->response->content($content);
@@ -41,6 +54,13 @@ class Controller {
     private function notFoundPage() {
         $this->response->statusCode('404', 'Not Found');
         return '<html><body><h1>ページが見つかりません</h1></body></html>';
+    }
+
+    // リダイレクト
+    private function redirect($url) {
+        //$this->response->statusCode('303', 'See Other');
+        $this->response->statusCode('302', 'Found');
+        $this->response->header('Location', $url);
     }
 
     // URIから、コントローラ名とアクション名を取得する。

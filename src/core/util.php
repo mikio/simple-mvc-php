@@ -128,9 +128,13 @@ function u_e_encode($str) {
 // $value にエラーメッセージがあれば、bootstrapのhas-error を出力する。
 function bst_has_error(&$errors, $key) {
     if (!array_key_exists($key, $errors)) return;
+    get_log()->debug("0 bst_error_msg ".$key);
     $value = $errors[$key];
+    get_log()->debug("1 bst_error_msg ".$key);
     if (empty($value)) return;
+    get_log()->debug("2 bst_error_msg ".$key);
     echo 'has-error';
+    get_log()->debug("3 bst_error_msg ".$key);
 }
 
 function bst_error_msg(&$errors, $key) {
