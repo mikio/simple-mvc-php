@@ -36,17 +36,37 @@ class Controller {
         get_log()->debug("uri:".$uri);
         
         // コントローラー名を取得
-        $this->controllerName = DEFAULT_CONTROLLER;
+        $this->controllerName = '';
         if (count($params) >= 1) {
             $this->controllerName = $params[0];
             get_log()->debug("controllerName from uri:".$this->controllerName);
         }
         
         // アクション名を取得
-        $this->actionName = DEFAULT_ACTION;
+        $this->actionName = '';
         if (count($params) >= 2) {
             $this->actionName = $params[1];
             get_log()->debug("actionName from uri:".$this->actionName);
+        }
+
+        $cakey = '/';
+        if ($this->controllerName) {
+            $cakey .= $this->controllerName;
+        }
+        if ($this->actionName) {
+            $cakey .= '/';
+            $cakey .= $this->actionName;
+        }
+        get_log()->debug("ca key:".$cakey);
+        global $g_routes;
+        if (array_key_exists($cakey, $g_routes)) {
+            $route = $g_routes[$cakey];
+            if (array_key_exists('controller', $route)) {
+                $this->controllerName = $route['controller'];
+            }
+            if (array_key_exists('action', $route)) {
+                $this->actionName = $route['action'];
+            }
         }
     }
 

@@ -24,4 +24,9 @@ $g_type = array(
     'phone'     => array('length'=>12, 'regex'=>'/\d{2}-\d{4}-\d{4}/'),
     'bool'      => array('length'=>1,  'regex'=>'/[01]/'),
 );
+
+$g_routes = array(
+    '/' => array('controller' => 'user', 'action' => 'list'),
+    '/user' => array('controller' => 'user', 'action' => 'list'),
+);
 ?>
