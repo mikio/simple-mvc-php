@@ -13,6 +13,10 @@ require_once("core/View.class.php");
 require_once("core/Action.class.php");
 require_once("core/Parameter.class.php");
 require_once("core/Database.class.php");
+require_once("core/Response.class.php");
+require_once("core/HttpNotFoundException.class.php");
+require_once("core/LoginException.class.php");
+require_once("core/Session.class.php");
 require_once("core/util.php");
 
 define('CONTROLLER_DIR', 'controller');

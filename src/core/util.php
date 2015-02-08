@@ -121,11 +121,6 @@ function u_e_encode($str) {
     echo urlencode($target_str);
 }
 
-// 404 用エラーページ
-function file_not_found() {
-    echo '<html><body><h1>ページが見つかりません</h1></body></html>';
-}
-
 ///////////////////////
 // 以下 bootstrap用
 ///////////////////////

@@ -3,25 +3,40 @@
 // URLの/区切りの1番目をコントローラ(機能名)、2番目をアクション(画面名)として実行する。
 // http://{domain}/{controller}/{action}
 class Controller {
+    private $controllerName;
+    private $actionName;
+    private $action;
+    private $response;
 
-    protected $controllerName;
-    protected $actionName;
-    protected $action;
+    public function __construct() {
+        get_log()->debug("hoge");
+        $this->response = new Response();
+    }
 
     // 振分け処理実行
     public function dispatch() {
-        $this->parseUri();
-        $this->initialize();
-        $this->execute();
+        try {
+
+            $this->parseUri();
+            $this->initialize();
+            $content = $this->execute();
+            $this->response->content($content);
+
+        } catch (HttpNotFoundException $e) {
+
+            // 404 用エラーページ
+            $this->response->statusCode('404', 'Not Found');
+            $this->response->content('<html><body><h1>ページが見つかりません</h1></body></html>');
+
+        } catch (Exception $e) {
+            get_log()->err("action->execute():".$e);
+        }
+        $this->response->send();
     }
 
     // アクションを実行する。 
     private function execute() {
-        try {
-            $content = $this->action->execute();
-        } catch (Exception $e) {
-            get_log()->err("action->execute():".$e);
-        }
+        return $this->action->execute();
     }
 
     // URIから、コントローラ名とアクション名を取得する。
@@ -49,6 +64,7 @@ class Controller {
             get_log()->debug("actionName from uri:".$this->actionName);
         }
 
+        // ルーティング制御
         $cakey = '/';
         if ($this->controllerName) {
             $cakey .= $this->controllerName;
@@ -74,10 +90,8 @@ class Controller {
     private function initialize() {
         $this->action = $this->createAction($this->controllerName, $this->actionName);
         if (null == $this->action) {
-            get_log()->debug("action is null");
-            header("HTTP/1.0 404 Not Found");
-            file_not_found();
-            exit;
+            get_log()->warning("action is null");
+            throw new HttpNotFoundException();
         }
         $this->action->initialize($this->controllerName, $this->actionName);
     }

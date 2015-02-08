@@ -50,8 +50,8 @@ class View {
      * @return string レンダリングした内容
      */
     public function render($path = null, $layoutFile = LAYOUT_FILE) {
-        header($this->contentType.$this->outputEncoding);
-        header($this->resCountsHd . $this->resCounts);
+        // header($this->contentType.$this->outputEncoding);
+        // header($this->resCountsHd . $this->resCounts);
 
         if ($path != null) {
             $templateFile = $this->templateFile($path);
