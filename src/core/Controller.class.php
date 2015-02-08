@@ -14,29 +14,33 @@ class Controller {
     }
 
     // 振分け処理実行
-    public function dispatch() {
+    public function execute() {
         try {
-
+            $content = '';
             $this->parseUri();
             $this->initialize();
-            $content = $this->execute();
-            $this->response->content($content);
+            $content = $this->executeAction();
 
         } catch (HttpNotFoundException $e) {
 
-            // 404 用エラーページ
-            $this->response->statusCode('404', 'Not Found');
-            $this->response->content('<html><body><h1>ページが見つかりません</h1></body></html>');
+            $content = $this->notFoundPage();
 
         } catch (Exception $e) {
             get_log()->err("action->execute():".$e);
         }
+        $this->response->content($content);
         $this->response->send();
     }
 
     // アクションを実行する。 
-    private function execute() {
+    private function executeAction() {
         return $this->action->execute();
+    }
+
+    // 404 用エラーページ
+    private function notFoundPage() {
+        $this->response->statusCode('404', 'Not Found');
+        return '<html><body><h1>ページが見つかりません</h1></body></html>';
     }
 
     // URIから、コントローラ名とアクション名を取得する。
