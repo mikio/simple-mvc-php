@@ -1,21 +1,57 @@
 <?php
 
-abstract class Controller {
+// URLの/区切りの1番目をコントローラ(機能名)、2番目をアクション(画面名)として実行する。
+// http://{domain}/{controller}/{action}
+class Controller {
+
     protected $controllerName;
     protected $actionName;
     protected $action;
-    protected $params;
 
-    protected function validates() {
-        return array();
+    // 振分け処理実行
+    public function dispatch() {
+        $this->parseUri();
+        $this->initialize();
+        $this->execute();
     }
 
-    public function initialize($controllerName, $actionName) {
+    // アクションを実行する。 
+    private function execute() {
+        try {
+            $content = $this->action->execute();
+        } catch (Exception $e) {
+            get_log()->err("action->execute():".$e);
+        }
+    }
 
-        $this->params = new Parameter($this->validates());
-        $this->controllerName = $controllerName;
-        $this->actionName = $actionName;
+    // URIから、コントローラ名とアクション名を取得する。
+    private function parseUri() {
+        $params = array();
+        $uri = $_SERVER['REQUEST_URI'];
+        get_log()->debug("uri raw:".$uri);
+        if ('' != $uri && '/' != $uri) {
+            $uri = preg_replace('/\?.*$/', '', $uri);
+            $params = explode('/', trim($uri,'/'));
+        }
+        get_log()->debug("uri:".$uri);
+        
+        // コントローラー名を取得
+        $this->controllerName = DEFAULT_CONTROLLER;
+        if (count($params) >= 1) {
+            $this->controllerName = $params[0];
+            get_log()->debug("controllerName from uri:".$this->controllerName);
+        }
+        
+        // アクション名を取得
+        $this->actionName = DEFAULT_ACTION;
+        if (count($params) >= 2) {
+            $this->actionName = $params[1];
+            get_log()->debug("actionName from uri:".$this->actionName);
+        }
+    }
 
+    // アクションクラスの生成。
+    private function initialize() {
         $this->action = $this->createAction($this->controllerName, $this->actionName);
         if (null == $this->action) {
             get_log()->debug("action is null");
@@ -24,26 +60,9 @@ abstract class Controller {
             exit;
         }
         $this->action->initialize($this->controllerName, $this->actionName);
-
-        if ($this->params->isPost()){
-            get_log()->debug("this is POST");
-        } else {
-            get_log()->debug("this is GET");
-        }
     }
 
-    public function execute() {
-        try {
-            // Controllerのアクションメソッドを実行する。 
-            $action = $this->actionName;
-            $this->$action();            
-        } catch (Exception $e) {
-            // ログ出力等の処理を記述
-            get_log()->error("Controller->execute():".$e);
-        }
-    }
-
-    // アクションクラスのインスタンスを取得
+    // アクションクラスのインスタンスを取得。
     private function createAction($controllerName, $actionName) {
         $className = ucfirst(strtolower($actionName)) . 'Action';
         $fileName = sprintf(ROOT.'src/%s/%s/%s.class.php', ACTION_DIR, $controllerName, $className);

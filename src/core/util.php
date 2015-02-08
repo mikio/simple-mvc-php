@@ -1,8 +1,36 @@
 <?php
 
+function p($var) {
+    $str = '';
+    ob_start();
+    var_dump($var);
+    $str = ob_get_contents();
+    ob_end_clean();
+    return $str;
+}
+/*
+  %1$s 時間
+  %2$s 識別文字列
+  %3$s ログレベル
+  %4$s メッセージ
+  %5$s ファイルパス
+  %6$s 行数
+  %7$s 関数名
+  %8$sクラス名
+2015/02/08 14:03:09 [debug]  [30]/vagrant/dev/simple-mvc-php/src/core/util.php - para key:admin 
+ */
 function get_log() {
-    $log_conf = array('mode'=>0664);
-    return Log::singleton("file", LOG_FILE, null, $log_conf, LOG_LEVEL);
+    $conf = array('mode' => 0777,
+                  'timeFormat' => '%Y/%m/%d %H:%M:%S',
+                  //'lineFormat' => '%1$s [%3$s] [%5$s:%6$s] %4$s');
+                  'lineFormat' => '%1$s [%3$s] [%8$s::%7$s:%6$s] %4$s');
+    $log = Log::singleton("file", LOG_FILE, null, $conf, LOG_LEVEL);
+    return $log;
+}
+
+function assoc_value($assoc, $key) {
+    if (!array_key_exists($key, $assoc)) return null;
+    return $assoc[$key];
 }
 
 function str_normalize($str) {
@@ -74,6 +102,11 @@ function eh($str) {
     echo htmlspecialchars($str, ENT_QUOTES);
 }
 
+function eh2($s, $d) {
+    $val = htmlspecialchars($s, ENT_QUOTES);
+    echo !empty($val)? $val: $d;
+}
+
 // シングルクォーテーションをエスケープ
 function ehe($str) {
     echo htmlspecialchars(preg_replace("/'/", "\\'", $str));
@@ -98,14 +131,14 @@ function file_not_found() {
 ///////////////////////
 
 // $value にエラーメッセージがあれば、bootstrapのhas-error を出力する。
-function has_error(&$errors, $key) {
+function bst_has_error(&$errors, $key) {
     if (!array_key_exists($key, $errors)) return;
     $value = $errors[$key];
     if (empty($value)) return;
     echo 'has-error';
 }
 
-function error_msg(&$errors, $key) {
+function bst_error_msg(&$errors, $key) {
     if (!array_key_exists($key, $errors)) return;
     $value = $errors[$key];
     if (empty($value)) return;

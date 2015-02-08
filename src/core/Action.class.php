@@ -3,20 +3,26 @@
 // アクション。継承して使う。
 // - ビューに依存するロジックを記述する。
 abstract class Action {
+    protected $params;
     protected $controllerName;
     protected $actionName;
+    protected function parameter() {
+        return array();
+    }
     public function initialize($controllerName, $actionName) {
         $this->controllerName = $controllerName;
         $this->actionName = $actionName;
+
+        $this->params = new Parameter($this->parameter());
+        if ($this->params->isPost()){
+            get_log()->debug("this is POST");
+        } else {
+            get_log()->debug("this is GET");
+        }
     }
     public function createView() {
-        $templateFile = sprintf(ROOT."src/%s/%s/%s.tmpl.php", TEMPLATE_DIR, $this->controllerName, $this->actionName);
-        get_log()->debug("templateFile:".$templateFile);
-        if (!file_exists($templateFile)) {
-            $templateFile = sprintf(ROOT."src/%s/%s", TEMPLATE_DIR, DUMMY_TEMPLATE_FILE);
-        }
-        return new View($templateFile);
+        return new View($this->controllerName, $this->actionName);
     }
-    abstract function execute($params);
+    abstract function execute();
 }
 ?>

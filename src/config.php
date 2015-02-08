@@ -1,43 +1,27 @@
 <?php
 
-require_once 'Log.php';
+require_once 'core/define.php';
 
-define('DEFAULT_CONTROLLER', 'customer');
-define('DEFAULT_ACTION', 'lists');
+define('DEFAULT_CONTROLLER', 'index');
+define('DEFAULT_ACTION', 'index');
 
-if (!defined('DS')){
-    define('DS', DIRECTORY_SEPARATOR);
-}
-if (!defined('ROOT')){
-    define('ROOT', dirname(dirname(__FILE__)).DS);
-}
-define('LOG_FILE',ROOT.'log/app.log');
 //define('LOG_LEVEL', PEAR_LOG_WARNING);
 define('LOG_LEVEL', PEAR_LOG_DEBUG);
 
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', 'root');
 define('DB_HOST', 'localhost');
 define('DB_PORT', '3306');
-define('DB_SOCKET', '/var/lib/mysql/mysql.sock');
 define('DB_DATABASE', 'sample');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', 'root');
 
-define('CONTROLLER_DIR', 'controller');
-define('MODEL_DIR', 'model');
-define('ACTION_DIR', 'action');
-define('TEMPLATE_DIR', 'template');
-define('LAYOUT_FILE', 'layout.tmpl.php');
-define('DUMMY_TEMPLATE_FILE', 'dummy.tmpl.php');
-
-if (!defined('WITHOUT_REQUIRE')){
-    require_once("Dispatcher.class.php");
-    require_once("core/Controller.class.php");
-    require_once("core/Model.class.php");
-    require_once("core/DbModel.class.php");
-    require_once("core/View.class.php");
-    require_once("core/Action.class.php");
-    require_once("core/Parameter.class.php");
-    require_once("core/Database.class.php");
-    require_once("util/util.php");
-}
+// このアプリケーションで使用する全パラメータの型定義。
+$g_type = array(
+    'id'        => array('length'=>20, 'regex'=>'/\d.*/'),
+    'timestamp' => array('length'=>100,'regex'=>null),
+    'word'      => array('length'=>100,'regex'=>null),
+    'password'  => array('length'=>8,  'regex'=>'/^[0-9a-zA-Z]+$/'),
+    'email'     => array('length'=>50, 'regex'=>'/.*@.*/'),
+    'phone'     => array('length'=>12, 'regex'=>'/\d{2}-\d{4}-\d{4}/'),
+    'bool'      => array('length'=>1,  'regex'=>'/[01]/'),
+);
 ?>
